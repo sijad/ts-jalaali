@@ -23,7 +23,7 @@ export class Jalaali {
   /*
     Checks whether a Jalaali date is valid or not.
   */
-  public static isValidJalaaliDate(year: number, month: number, day: number): Boolean {
+  public static isValidJalaaliDate(year: number, month: number, day: number): boolean {
     return year >= -61 && year <= 3177 &&
           month >= 1 && month <= 12 &&
           day >= 1 && day <= Jalaali.jalaaliMonthLength(year, month, day);
@@ -32,7 +32,7 @@ export class Jalaali {
   /*
     Is this a leap year or not?
   */
-  public static isLeapJalaaliYear(year: number): Boolean {
+  public static isLeapJalaaliYear(year: number): boolean {
     return Jalaali.jalCal(year).leap === 0;
   }
 
