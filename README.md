@@ -10,8 +10,7 @@ all credits goes to [jalaali's contributor](https://github.com/jalaali/jalaali-j
 ```ts
 import { Jalaali } from "ts-jalaali";
 
-const jalaali = new Jalaali(1981, 8, 17);
-jalaali.toJalaali();
+const jalaali = Jalaali.toJalaali(1981, 8, 17);
 ```
 
 ### Javascript
@@ -19,6 +18,5 @@ jalaali.toJalaali();
 ```js
 const Jalaali = require('ts-jalaali').Jalaali;
 
-const jalaali = new Jalaali(1981, 8, 17);
-jalaali.toJalaali();
+const jalaali = Jalaali.toJalaali(1981, 8, 17);
 ```
