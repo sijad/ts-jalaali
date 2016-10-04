@@ -3,10 +3,17 @@
   "version": "0.0.0",
   "description": "ts-jalaali",
   "license": "MIT",
-  "repository": "",
-  "author": "",
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:sijad/ts-jalaali.git"
+  },
+  "author": "sijad",
   "keywords": [
-    ""
+    "shamsi",
+    "jalali",
+    "date",
+    "persian",
+    "fars"
   ],
   "files": [
     "lib"
