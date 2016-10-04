@@ -1,74 +1,54 @@
 export class Jalaali {
-  private year: number;
-  private month: number;
-  private day: number;
-
-  private jcalced: {jy: number, jm: number, jd: number};
-  private gcalced: {gy: number, gm: number, gd: number};
-
-  constructor(year: number | Date, month?: number, day?: number) {
-    if (year instanceof Date) {
-      this.year = year.getFullYear();
-      this.month = year.getMonth() + 1;
-      this.day = year.getDate();
-    } else {
-      this.year = year;
-      this.month = month;
-      this.day = day;
-    }
-  }
 
   /*
     Converts a Gregorian date to Jalaali.
   */
-  public toJalaali() {
-    if (!this.jcalced) {
-      this.jcalced = this.d2j(
-        this.g2d(this.year, this.month, this.day)
-      );
-    }
-    return this.jcalced;
+  public static toJalaali(date: Date): Ijdate;
+  public static toJalaali(year: number, month: number, day: number): Ijdate;
+  public static toJalaali(year: number | Date, month?: number, day?: number): Ijdate {
+    const date = convertFromDate(year, month, day);
+    return Jalaali.d2j(Jalaali.g2d(date.year, date.month, date.day));
   }
 
   /*
     Converts a Jalaali date to Gregorian.
   */
-  public toGregorian() {
-    if (!this.gcalced) {
-      this.gcalced = this.d2g(this.j2d(this.year, this.month, this.day));
-    }
-    return this.gcalced;
+  public static toGregorian(date: Date): Igdate;
+  public static toGregorian(year: number, month: number, day: number): Igdate;
+  public static toGregorian(year: number | Date, month?: number, day?: number): Igdate {
+    const date = convertFromDate(year, month, day);
+    return Jalaali.d2g(Jalaali.j2d(date.year, date.month, date.day));
   }
 
   /*
     Checks whether a Jalaali date is valid or not.
   */
-  public isValidJalaaliDate() {
-    return this.year >= -61 && this.year <= 3177 &&
-          this.month >= 1 && this.month <= 12 &&
-          this.day >= 1 && this.day <= this.jalaaliMonthLength();
+  public static isValidJalaaliDate(year: number, month: number, day: number): Boolean {
+    return year >= -61 && year <= 3177 &&
+          month >= 1 && month <= 12 &&
+          day >= 1 && day <= Jalaali.jalaaliMonthLength(year, month, day);
   }
 
   /*
     Is this a leap year or not?
   */
-  public isLeapJalaaliYear() {
-    return this.jalCal(this.year).leap === 0;
+  public static isLeapJalaaliYear(year: number): Boolean {
+    return Jalaali.jalCal(year).leap === 0;
   }
 
   /*
     Number of days in a given month in a Jalaali year.
   */
-  public jalaaliMonthLength() {
-    if (this.month <= 6) {
+  public static jalaaliMonthLength(year: number, month: number, day: number): number {
+    if (month <= 6) {
       return 31;
     }
 
-    if (this.month <= 11) {
+    if (month <= 11) {
       return 30;
     }
 
-    if (this.isLeapJalaaliYear()) {
+    if (Jalaali.isLeapJalaaliYear(year)) {
       return 30;
     }
 
@@ -88,7 +68,7 @@ export class Jalaali {
     @see: http://www.astro.uni.torun.pl/~kb/Papers/EMP/PersianC-EMP.htm
     @see: http://www.fourmilab.ch/documents/calendar/
   */
-  private jalCal(jy: number) {
+  private static jalCal(jy: number) {
     // Jalaali years starting the 33-year rule.
     const breaks = [
       -61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
@@ -153,9 +133,9 @@ export class Jalaali {
     @param jd Jalaali day (1 to 29/31)
     @return Julian Day number
   */
-  private j2d(jy: number, jm: number, jd: number) {
-    const r = this.jalCal(jy);
-    return this.g2d(r.gy, 3, r.march) + (jm - 1) * 31 - div(jm, 7) * (jm - 7) + jd - 1;
+  private static j2d(jy: number, jm: number, jd: number) {
+    const r = Jalaali.jalCal(jy);
+    return Jalaali.g2d(r.gy, 3, r.march) + (jm - 1) * 31 - div(jm, 7) * (jm - 7) + jd - 1;
   }
 
   /*
@@ -166,12 +146,12 @@ export class Jalaali {
       jm: Jalaali month (1 to 12)
       jd: Jalaali day (1 to 29/31)
   */
-  private d2j(jdn: number) {
-    const gy = this.d2g(jdn).gy;
+  private static d2j(jdn: number) {
+    const gy = Jalaali.d2g(jdn).gy;
     let jy = gy - 621;
 
-    const r = this.jalCal(jy);
-    const jdn1f = this.g2d(gy, 3, r.march);
+    const r = Jalaali.jalCal(jy);
+    const jdn1f = Jalaali.g2d(gy, 3, r.march);
 
     let jd: number;
     let jm: number;
@@ -212,7 +192,7 @@ export class Jalaali {
     @param gd Calendar day of the month (1 to 28/29/30/31)
     @return Julian Day number
   */
-  private g2d(gy: number, gm: number, gd: number) {
+  private static g2d(gy: number, gm: number, gd: number) {
     let d = div((gy + div(gm - 8, 6) + 100100) * 1461, 4)
     + div(153 * mod(gm + 9, 12) + 2, 5)
     + gd - 34840408;
@@ -230,7 +210,7 @@ export class Jalaali {
       gm: Calendar month (1 to 12)
       gd: Calendar day of the month M (1 to 28/29/30/31)
   */
-  private d2g(jdn: number) {
+  private static d2g(jdn: number) {
     const j = (4 * jdn + 139361631) + div(div(4 * jdn + 183187720, 146097) * 3, 4) * 4 - 3908;
 
     const i = div(mod(j, 1461), 4) * 5 + 308;
@@ -243,7 +223,76 @@ export class Jalaali {
 
     return {gy, gm, gd};
   }
+
+  private year: number;
+  private month: number;
+  private day: number;
+
+  private jcalced: {jy: number, jm: number, jd: number};
+  private gcalced: {gy: number, gm: number, gd: number};
+
+  constructor(year: Date)
+  constructor(year: number, month: number, day: number)
+  constructor(year: number | Date, month?: number, day?: number) {
+    const date = convertFromDate(year, month, day);
+    this.year = date.year;
+    this.month = date.month;
+    this.day = date.day;
+  }
+
+  /*
+    Converts a Gregorian date to Jalaali.
+  */
+  public toJalaali() {
+    if (!this.jcalced) {
+      this.jcalced = Jalaali.toJalaali(this.year, this.month, this.day);
+    }
+    return this.jcalced;
+  }
+
+  /*
+    Converts a Jalaali date to Gregorian.
+  */
+  public toGregorian() {
+    if (!this.gcalced) {
+      this.gcalced = Jalaali.toGregorian(this.year, this.month, this.day);
+    }
+    return this.gcalced;
+  }
+
+  /*
+    Checks whether a Jalaali date is valid or not.
+  */
+  public isValidJalaaliDate() {
+    return Jalaali.isValidJalaaliDate(this.year, this.month, this.day);
+  }
+
+  /*
+    Is this a leap year or not?
+  */
+  public isLeapJalaaliYear() {
+    return Jalaali.isLeapJalaaliYear(this.year);
+  }
+
+  /*n
+    Number of days in a given month in a Jalaali year.
+  */
+  public jalaaliMonthLength() {
+    return Jalaali.jalaaliMonthLength(this.year, this.month, this.day);
+  }
 };
+
+export interface Ijdate {
+  jy: number;
+  jm: number;
+  jd: number;
+}
+
+export interface Igdate {
+  gy: number;
+  gm: number;
+  gd: number;
+}
 
 function round(x: number) {
   if (x < 0) {
@@ -259,4 +308,14 @@ function div(a: number, b: number) {
 
 function mod(a: number, b: number) {
   return a - round(a / b) * b;
+}
+
+function convertFromDate(year: number | Date, month?: number, day?: number) {
+  if (year instanceof Date) {
+    month = year.getMonth() + 1;
+    day = year.getDate();
+    year = year.getFullYear();
+  }
+
+  return {day, month, year};
 }
