@@ -3,8 +3,8 @@ export declare class Jalaali {
     static toJalaali(year: number, month: number, day: number): Ijdate;
     static toGregorian(date: Date): Igdate;
     static toGregorian(year: number, month: number, day: number): Igdate;
-    static isValidJalaaliDate(year: number, month: number, day: number): Boolean;
-    static isLeapJalaaliYear(year: number): Boolean;
+    static isValidJalaaliDate(year: number, month: number, day: number): boolean;
+    static isLeapJalaaliYear(year: number): boolean;
     static jalaaliMonthLength(year: number, month: number, day: number): number;
     private static jalCal(jy);
     private static j2d(jy, jm, jd);
@@ -28,8 +28,8 @@ export declare class Jalaali {
         gm: number;
         gd: number;
     };
-    isValidJalaaliDate(): Boolean;
-    isLeapJalaaliYear(): Boolean;
+    isValidJalaaliDate(): boolean;
+    isLeapJalaaliYear(): boolean;
     jalaaliMonthLength(): number;
 }
 export interface Ijdate {
